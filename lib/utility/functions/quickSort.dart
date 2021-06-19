@@ -21,7 +21,7 @@ void main() {
 }
 
 List<DocumentSnapshot> quickSort(
-    List<DocumentSnapshot> list, int low, int high) {
+    List<DocumentSnapshot<Map>> list, int low, int high) {
   if (low < high) {
     int pi = partition(list, low, high);
     print("pivot: ${list[pi].data()['score']} now at index $pi");
@@ -32,7 +32,7 @@ List<DocumentSnapshot> quickSort(
   return list;
 }
 
-int partition(List<DocumentSnapshot> list, low, high) {
+int partition(List<DocumentSnapshot<Map>> list, low, high) {
   // Base check
   if (list.isEmpty) {
     return 0;

@@ -29,27 +29,30 @@ class UploadImage {
       image = File(pickedFile.path);
       int dateInMs = DateTime.now().millisecondsSinceEpoch;
       int year = DateTime.now().year;
-      StorageReference ref = FirebaseStorage.instance
+      Reference ref = FirebaseStorage.instance
           .ref()
           .child('user')
           .child('${userData['uid']}')
           .child("profilePhoto.jpg");
 
-      StorageUploadTask uploadTask = ref.putFile(image);
-      uploadTask.events.listen((event) {
-        progress = event.snapshot.bytesTransferred.toDouble() /
-            event.snapshot.totalByteCount.toDouble();
+      UploadTask uploadTask = ref.putFile(image);
+      uploadTask.snapshotEvents.listen((event) {
+        progress = event.bytesTransferred.toDouble() /
+            event.totalBytes.toDouble();
         // callBack();
         // set state is called using callback function
       }).onError((error) {
         // do something to handle error
       });
 
-      url = await (await uploadTask.onComplete).ref.getDownloadURL();
-      await _firestore
-          .collection('phoneNumber')
-          .doc(userData['phone'])
-          .update({'photo': url});
+
+      url =
+      await (await uploadTask.whenComplete(() => null)).ref.getDownloadURL();
+      print(url);
+      // await _firestore
+      //     .collection('phoneNumber')
+      //     .doc(userData['phone'])
+      //     .update({'photo': url});
       callBack(url);
     }
   }

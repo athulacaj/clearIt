@@ -31,8 +31,8 @@ class FirebaseServices {
     addUserData['age'] = "31yrs";
     return _fireStoreDataBase
         .collection('user')
-        .document('user_03')
-        .setData(addUserData);
+        .doc('user_03')
+        .set(addUserData);
   }
 }
 

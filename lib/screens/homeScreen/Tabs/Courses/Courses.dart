@@ -1,19 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
-import 'package:studywithfun/screens/RecentlyAskedQuestions/recentlyAsked.dart';
+import 'package:studywithfun/screens/RecentlyAskedQuestions/RecentlyAskedScreen.dart';
 import 'package:studywithfun/screens/askADoubt/askADoubt.dart';
 import 'package:studywithfun/screens/askADoubt/uploadImage.dart';
 import 'package:studywithfun/screens/daily%20word/flareDemo.dart';
 import 'package:studywithfun/screens/mindMath/mindMath.dart';
+import 'package:studywithfun/screens/shortNotes/shortNotesIndexScreen.dart';
 import 'package:studywithfun/utility/functions/navigatorFunctions.dart';
+import 'package:studywithfun/utility/functions/showToastFunction.dart';
 import 'package:studywithfun/utility/provider/commonprovider.dart';
 import 'extracted/HomeBox.dart';
+import 'package:studywithfun/screens/rapidfire/rapidFIreScreen.dart';
+import 'package:studywithfun/screens/daily word/dailyWordScreen.dart';
+import 'package:studywithfun/screens/notes & equation/notesIndexScreen.dart';
+import 'package:studywithfun/screens/viewOurSolution/ViewOurSolutionScreen.dart';
+import 'package:studywithfun/screens/daily word/database.dart';
 
 class Courses extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    CommonProvider spinnerProvider =
+        Provider.of<CommonProvider>(context, listen: false);
+    FirebaseFirestore _fireStore = FirebaseFirestore.instance;
     return Stack(
       children: [
         Container(
@@ -39,8 +50,7 @@ class Courses extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () async {
-                      await Provider.of<CommonProvider>(context, listen: false)
-                          .showSpinner(true);
+                      await spinnerProvider.showSpinner(true);
                       navigatorSlideAnimationFunction(context, AskADoubt());
                     },
                     child: Material(
@@ -68,9 +78,7 @@ class Courses extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () async {
-                          await Provider.of<CommonProvider>(context,
-                                  listen: false)
-                              .showSpinner(true);
+                          await spinnerProvider.showSpinner(true);
                           navigatorSlideAnimationFunction(
                               context, MindMathScreen());
                         },
@@ -85,12 +93,22 @@ class Courses extends StatelessWidget {
                       SizedBox(width: 10),
                       GestureDetector(
                         onTap: () async {
-                          await Provider.of<CommonProvider>(context,
-                                  listen: false)
-                              .showSpinner(true);
+                          await spinnerProvider.showSpinner(false);
+                          Map dailyWordData =
+                              await DailyWordDatabase().getData();
+                          print(dailyWordData);
+                          spinnerProvider.hideSpinner();
 
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Demo()));
+                          if (dailyWordData.isEmpty) {
+                            showToast('No word available');
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DailyWordScreen(
+                                          data: dailyWordData,
+                                        )));
+                          }
                         },
                         child: Container(
                           alignment: Alignment.center,
@@ -101,12 +119,22 @@ class Courses extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 10),
-                      Container(
-                        alignment: Alignment.center,
-                        child: HomeBox(
-                          title: 'Rapid Fire',
-                          size: size,
-                          image: 'images/clearit/rapidFiore.png',
+                      GestureDetector(
+                        onTap: () async {
+                          await spinnerProvider.showSpinner(true);
+
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RapidFireScreen()));
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: HomeBox(
+                            title: 'Rapid Fire',
+                            size: size,
+                            image: 'images/clearit/rapidFiore.png',
+                          ),
                         ),
                       ),
                     ],
@@ -115,19 +143,59 @@ class Courses extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        alignment: Alignment.center,
-                        child: HomeBox(
-                          title: 'Notes & Equation',
-                          size: size,
-                          image: 'images/clearit/notes.png',
+                      GestureDetector(
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: HomeBox(
+                            title: 'Notes & Equation',
+                            size: size,
+                            image: 'images/clearit/notes.png',
+                          ),
                         ),
+                        onTap: () async {
+                          await spinnerProvider.showSpinner(false);
+
+                          List coursesList = (await _fireStore
+                                  .collection('notes')
+                                  .doc('courses')
+                                  .get())
+                              .data()['coursesList'];
+                          print(coursesList);
+                          spinnerProvider.hideSpinner();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NotesScreen(
+                                        coursesList: coursesList,
+                                      )));
+                        },
                       ),
                       SizedBox(width: 10),
-                      Container(
-                        height: (size.width / 3.5) / 2,
-                        color: Colors.white,
-                        width: size.width / 3.6,
+                      GestureDetector(
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: HomeBox(
+                            title: 'Short Notes',
+                            size: size,
+                            image: 'images/shortNotes.png',
+                          ),
+                        ),
+                        onTap: () async {
+                          await spinnerProvider.showSpinner(false);
+                          //
+                          // List coursesList = (await _fireStore
+                          //         .collection('notes')
+                          //         .doc('courses')
+                          //         .get())
+                          //     .data()['coursesList'];
+                          // print(coursesList);
+                          spinnerProvider.hideSpinner();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ShortNotesIndexScreen()));
+                        },
                       ),
                       SizedBox(width: 10),
                       Container(
@@ -147,7 +215,8 @@ class Courses extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => RecentlyAsked()));
+                                builder: (context) =>
+                                    RecentlyAskedQuestionsScreen()));
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -168,7 +237,12 @@ class Courses extends StatelessWidget {
                     width: size.width / 1.2,
                     child: FlatButton(
                       color: Colors.white,
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ViewOurSolutionScreen()));
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [

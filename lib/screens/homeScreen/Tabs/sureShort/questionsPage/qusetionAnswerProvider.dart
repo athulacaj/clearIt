@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class QuestionAnswersProvider extends ChangeNotifier {
+class SureShotAnswersProvider extends ChangeNotifier {
   int questionIndex = 0;
   int previousIndex = -1;
   List<Map> answeredList = [];

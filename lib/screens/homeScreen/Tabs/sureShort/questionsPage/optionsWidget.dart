@@ -46,11 +46,11 @@ class _OptionsState extends State<Options> {
                     } else {
                       selectedIndex = i;
                     }
-                    Provider.of<QuestionAnswersProvider>(context, listen: false)
+                    Provider.of<SureShotAnswersProvider>(context, listen: false)
                         .addOptionToAnswerList(optionSelected: selectedIndex);
                     setState(() {});
                   },
-                  child: Consumer<QuestionAnswersProvider>(
+                  child: Consumer<SureShotAnswersProvider>(
                     builder: (BuildContext context, provider, Widget child) {
                       int optionSelected = -1;
                       if (provider.answeredList.length > 0) {

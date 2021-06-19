@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:studywithfun/utility/provider/account.dart';
 import 'Myaccount/CoinDetails.dart';
 import 'profile/profile.dart';
-import 'Myaccount/MyQuestions.dart';
+import 'package:studywithfun/screens/viewOurSolution/ViewOurSolutionScreen.dart';
 
 class Drawer1 extends StatefulWidget {
   final Widget child;
@@ -288,7 +288,7 @@ class _MyDrawerState extends State<MyDrawer> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  MyQuestions()));
+                                                  ViewOurSolutionScreen()));
                                     },
                                     child: Container(
                                       child: Text(
@@ -374,7 +374,7 @@ class _MyDrawerState extends State<MyDrawer> {
                                       print('hi');
                                     },
                                     child: Container(
-                                      child: Text('Coin Details',
+                                      child: Text('Use a Promocode',
                                           style:
                                               TextStyle(color: Colors.white)),
                                       alignment: Alignment.centerLeft,
@@ -385,7 +385,7 @@ class _MyDrawerState extends State<MyDrawer> {
                                   FlatButton(
                                     child: Container(
                                       child: Text(
-                                        'My Questions',
+                                        'Request Coins',
                                         style: TextStyle(
                                           color: Colors.white,
                                         ),
@@ -396,7 +396,7 @@ class _MyDrawerState extends State<MyDrawer> {
                                   ),
                                   FlatButton(
                                     child: Container(
-                                      child: Text('Saved Items',
+                                      child: Text('Buy Pack',
                                           style:
                                               TextStyle(color: Colors.white)),
                                       alignment: Alignment.centerLeft,

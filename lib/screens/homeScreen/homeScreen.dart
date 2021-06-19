@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:provider/provider.dart';
 import 'package:studywithfun/utility/coin.dart';
 import 'package:studywithfun/utility/loadingWidget/loading.dart';
@@ -46,7 +47,7 @@ class _HomeScreen1State extends State<HomeScreen1>
 
   @override
   void initState() {
-    _tabController = TabController(vsync: this, length: 3);
+    _tabController = TabController(vsync: this, length: 2);
 
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 700));
@@ -55,8 +56,12 @@ class _HomeScreen1State extends State<HomeScreen1>
             )
         .animate(_animationController);
     _animationController.repeat(reverse: true);
-
+    secureScreen();
     super.initState();
+  }
+
+  Future<void> secureScreen() async {
+    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
   }
 
   Animation<Color> colorTween;
@@ -124,9 +129,9 @@ class _HomeScreen1State extends State<HomeScreen1>
                   Tab(
                     text: 'Top Player',
                   ),
-                  Tab(
-                    text: 'Sure Short',
-                  ),
+                  // Tab(
+                  //   text: 'Sure Short',
+                  // ),
                 ],
               ),
               SizedBox(height: 20),
@@ -137,7 +142,7 @@ class _HomeScreen1State extends State<HomeScreen1>
                   children: [
                     Courses(),
                     TopPlayer(),
-                    SureShort(),
+                    // SureShort(),
                   ],
                 ),
               ),

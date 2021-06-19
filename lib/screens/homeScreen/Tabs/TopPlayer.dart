@@ -68,6 +68,8 @@ class TopPlayer extends StatelessWidget {
                   child: ListView.builder(
                     itemCount: result.length,
                     itemBuilder: (BuildContext context, int index) {
+                      Map<String, dynamic> data = result[index].data();
+
                       return AnimationConfiguration.staggeredList(
                         position: index,
                         duration: const Duration(milliseconds: 375),
@@ -79,7 +81,7 @@ class TopPlayer extends StatelessWidget {
                               child: FractionallySizedBox(
                                 widthFactor: 0.95,
                                 child: Material(
-                                  color: result[index].data()['uid'] == uid
+                                  color: data['uid'] == uid
                                       ? Colors.yellow
                                       : Colors.white,
                                   elevation: 2,
@@ -102,14 +104,13 @@ class TopPlayer extends StatelessWidget {
                                         //           color: Colors.white,
                                         //         ))),
                                         AutoSizeText(
-                                          '${result[index].data()['name']}'
+                                          '${data['name']}'
                                               .capitalizeFirstofEach(),
                                           maxLines: 1,
                                         ),
                                         Spacer(),
                                         SizedBox(width: 5),
-                                        Text(
-                                            '${result[index].data()['coins']}'),
+                                        Text('${data['coins']}'),
                                         coinBuilder(15),
                                       ],
                                     ),

@@ -18,24 +18,26 @@ class UploadImage {
     image = File(pickedFile.path);
     int dateInMs = DateTime.now().millisecondsSinceEpoch;
     int year = DateTime.now().year;
-    StorageReference ref = FirebaseStorage.instance
+    Reference ref = FirebaseStorage.instance
         .ref()
         .child('$year')
         .child('doubts')
         .child('uid')
         .child("$dateInMs.jpg");
 
-    StorageUploadTask uploadTask = ref.putFile(image);
-    uploadTask.events.listen((event) {
-      progress = event.snapshot.bytesTransferred.toDouble() /
-          event.snapshot.totalByteCount.toDouble();
+    UploadTask uploadTask = ref.putFile(image);
+    uploadTask.snapshotEvents.listen((event) {
+      progress = event.bytesTransferred.toDouble() /
+          event.totalBytes.toDouble();
       callBack();
       // set state is called using callback function
     }).onError((error) {
       // do something to handle error
     });
 
-    url = await (await uploadTask.onComplete).ref.getDownloadURL();
+    url =
+    await (await uploadTask.whenComplete(() => null)).ref.getDownloadURL();
     callBack();
   }
+
 }

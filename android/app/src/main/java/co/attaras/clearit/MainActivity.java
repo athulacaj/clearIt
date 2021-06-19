@@ -1,4 +1,4 @@
-package co.attaras.studywithfun;
+package co.attaras.clearit;
 
 import io.flutter.embedding.android.FlutterActivity;
 

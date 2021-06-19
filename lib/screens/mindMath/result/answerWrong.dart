@@ -1,12 +1,19 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:studywithfun/screens/homeScreen/homeScreen.dart';
+import 'package:studywithfun/utility/widgets/ImageView.dart';
 import 'package:studywithfun/utility/widgets/commonAppBar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../mindMath.dart';
 
 class AnswerWrong extends StatefulWidget {
   final String reason;
-  AnswerWrong({this.reason});
+  final String wrongAnswer;
+  final int wrongQIndex;
+  List<Map> questions;
+  AnswerWrong(
+      {this.reason, this.wrongQIndex, this.questions, this.wrongAnswer});
 
   @override
   _AnswerWrongState createState() => _AnswerWrongState();
@@ -15,6 +22,7 @@ class AnswerWrong extends StatefulWidget {
 class _AnswerWrongState extends State<AnswerWrong> {
   @override
   Widget build(BuildContext context) {
+    print("wrongQIndex ${widget.wrongQIndex}");
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: commonAppBar(title: 'Mind Math', context: context),
@@ -25,25 +33,33 @@ class _AnswerWrongState extends State<AnswerWrong> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              widget.reason == 'wrong'
-                  ? Text('Your Answer Is Wrong!!')
-                  : Text('Time Out'),
-              SizedBox(height: 45),
-              InkWell(
-                  onTap: () {},
-                  child: Container(
-                    height: 50,
-                    width: size.width / 2,
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Youtube Link',
-                      style: TextStyle(color: Colors.white),
+              SizedBox(height: 14),
+              widget.reason == 'Wrong'
+                  ? Text('Your entered answer ${widget.wrongAnswer} is wrong',
+                      style: reasonTextStyle)
+                  : Text('Time Out', style: reasonTextStyle),
+              Container(
+                width: double.infinity,
+                margin: EdgeInsets.all(18),
+                decoration:
+                    BoxDecoration(border: Border.all(color: Colors.black26)),
+                child: Column(
+                  children: [
+                    SizedBox(height: 55),
+                    Text(
+                      widget.questions[widget.wrongQIndex]['question'] +
+                          " = " +
+                          "${widget.questions[widget.wrongQIndex]['answer']}",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black),
                     ),
-                    decoration: BoxDecoration(
-                        color: Color(0xff6369f2),
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                  )),
-              SizedBox(height: 35),
+                    SizedBox(height: 55),
+                  ],
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -70,6 +86,7 @@ class _AnswerWrongState extends State<AnswerWrong> {
                       )),
                 ],
               ),
+              SizedBox(height: 30),
             ],
           ),
         ),
@@ -77,3 +94,5 @@ class _AnswerWrongState extends State<AnswerWrong> {
     );
   }
 }
+
+TextStyle reasonTextStyle = TextStyle(fontSize: 16);

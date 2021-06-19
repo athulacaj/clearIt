@@ -8,6 +8,7 @@ import 'splashscreen.dart';
 import 'utility/provider/account.dart';
 import 'utility/provider/commonprovider.dart';
 import 'utility/provider/coinStramProvider.dart';
+import 'screens/rapidfire/qusetionAnswerProvider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,8 +23,11 @@ void main() {
         ChangeNotifierProvider<MyAccount>(
           create: (context) => MyAccount(),
         ),
-        ChangeNotifierProvider<QuestionAnswersProvider>(
-          create: (context) => QuestionAnswersProvider(),
+        ChangeNotifierProvider<SureShotAnswersProvider>(
+          create: (context) => SureShotAnswersProvider(),
+        ),
+        ChangeNotifierProvider<RapidFireQuestionAnswersProvider>(
+          create: (context) => RapidFireQuestionAnswersProvider(),
         ),
         // StreamProvider(
         //   create: (BuildContext context) =>
@@ -47,7 +51,7 @@ class MyApp extends StatelessWidget {
       value: SystemUiOverlayStyle.light,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'StudyWithFun',
+        title: 'ClearIt',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           primaryColor: Color(0xff7f86ff),
@@ -55,7 +59,6 @@ class MyApp extends StatelessWidget {
           tabBarTheme: TabBarTheme(
               labelColor: Colors.black, unselectedLabelColor: Colors.grey),
         ),
-
         home: SplashScreenWindow(),
         // initialRoute: HomeScreen.id,
         // routes: {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:studywithfun/utility/widgets/commonAppBar.dart';
 
+import 'keyBoardWidget.dart';
 import 'result/answerWrong.dart';
 import 'reviewPage.dart';
 
@@ -22,6 +23,8 @@ class _MindMathScreenState extends State<MindMathScreen> {
   );
   PageController pageController;
   TextEditingController searchController;
+  int timeLimit = 1000;
+  int prvsIndex = -1;
   @override
   void initState() {
     answeredList = [];
@@ -43,11 +46,19 @@ class _MindMathScreenState extends State<MindMathScreen> {
     _disposed = true; // Need to call dispose function.
   }
 
-  void ifWrong() async {
+  void ifWrong(String reason, int wrongQIndex, String wrongAnser) async {
+    _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
     _disposed = true;
     await _stopWatchTimer.dispose();
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => AnswerWrong()));
+        context,
+        MaterialPageRoute(
+            builder: (context) => AnswerWrong(
+                  reason: reason,
+                  wrongQIndex: wrongQIndex,
+                  questions: questions,
+                  wrongAnswer: wrongAnser,
+                )));
   }
 
   @override
@@ -66,19 +77,20 @@ class _MindMathScreenState extends State<MindMathScreen> {
                       Expanded(
                         flex: 5,
                         child: Container(
-                          color: Colors.blue.shade400,
+                          // color: Colors.blue.shade400,
+                          color: Color(0xff6EA1D6),
                           child: PageView.builder(
                             controller: pageController,
                             physics: NeverScrollableScrollPhysics(),
                             itemCount: questions.length,
                             itemBuilder: (context, index) {
-                              if (_disposed == false) {
+                              if (_disposed == false && prvsIndex != index) {
                                 _stopWatchTimer.onExecute
                                     .add(StopWatchExecute.reset);
                                 _stopWatchTimer.onExecute
                                     .add(StopWatchExecute.start);
                               }
-
+                              prvsIndex = index;
                               return ConstrainedBox(
                                 constraints: BoxConstraints(maxHeight: 1000),
                                 child: ListView(
@@ -121,25 +133,18 @@ class _MindMathScreenState extends State<MindMathScreen> {
                                                               stream:
                                                                   _stopWatchTimer
                                                                       .secondTime,
-                                                              initialData:
-                                                                  _stopWatchTimer
-                                                                      .secondTime
-                                                                      .value,
+                                                              initialData: 0,
                                                               builder: (context,
                                                                   snap) {
                                                                 final value =
                                                                     snap.data;
-                                                                if ((5 -
+                                                                if ((timeLimit -
                                                                         value) ==
                                                                     0) {
-                                                                  _stopWatchTimer
-                                                                      .onExecute
-                                                                      .add(StopWatchExecute
-                                                                          .stop);
-
-                                                                  _disposed =
-                                                                      true;
-                                                                  ifWrong();
+                                                                  ifWrong(
+                                                                      "Time Out",
+                                                                      index,
+                                                                      "");
                                                                 }
                                                                 return Row(
                                                                   children: [
@@ -151,7 +156,7 @@ class _MindMathScreenState extends State<MindMathScreen> {
                                                                         color: Colors
                                                                             .white),
                                                                     Text(
-                                                                      '${5 - value}' +
+                                                                      '${timeLimit - value}' +
                                                                           ' s',
                                                                       style: TextStyle(
                                                                           fontSize:
@@ -202,35 +207,12 @@ class _MindMathScreenState extends State<MindMathScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: size.height / 46),
-                      Theme(
-                        data: ThemeData(
-                          primaryColor: Color(0xff6369f2),
-                          primaryColorDark: Color(0xff6369f2),
-                        ),
-                        child: SizedBox(
-                          height: 55,
-                          child: TextField(
-                            controller: searchController,
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.done,
-                            onSubmitted: (value) {
-                              nextFunction(questions);
-                            },
-                            decoration: InputDecoration(
-                              hintText: 'Enter answer',
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  nextFunction(questions);
-                                },
-                                icon: Icon(Icons.check),
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide: new BorderSide(color: Colors.teal),
-                              ),
-                            ),
-                          ),
-                        ),
+                      SizedBox(height: 10),
+                      KeyBoardWidget(
+                        onSubmit: (String result) {
+                          print(result);
+                          nextFunction(questions, result);
+                        },
                       ),
                     ],
                   ),
@@ -240,13 +222,18 @@ class _MindMathScreenState extends State<MindMathScreen> {
     );
   }
 
-  void nextFunction(List<Map> questions) {
+  void nextFunction(List<Map> questions, String answer) async {
     int i = pageController.page.toInt();
-    int answered = int.parse(searchController.text);
+    int answered = int.parse(answer);
     answeredList.add(answered);
     print(answered);
-    if (i + 1 == questions.length) {
-      Navigator.push(
+    if (questions[i]['answer'] != answered) {
+      ifWrong("Wrong", i, answered.toString());
+    } else if (i + 1 == questions.length) {
+      _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+      _disposed = true;
+      await _stopWatchTimer.dispose();
+      Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) => ReviewPage(
@@ -269,7 +256,15 @@ class _MindMathScreenState extends State<MindMathScreen> {
 }
 
 List<Map> questions = [
-  {'question': '1+3', 'answer': 4},
+  {
+    'question': '1+3',
+    'answer': 4,
+    'solution': {
+      'image':
+          'https://d138zd1ktt9iqe.cloudfront.net/media/seo_landing_files/afshan-us-addition-03-1605863466.png',
+      'youtube': 'https://www.youtube.com/watch?v=HJ1AlSrgZVQ'
+    }
+  },
   {'question': '1+5', 'answer': 6},
   {'question': '1+7', 'answer': 8},
   {'question': '1+5', 'answer': 6},

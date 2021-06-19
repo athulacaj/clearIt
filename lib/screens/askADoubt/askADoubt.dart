@@ -8,8 +8,9 @@ import 'package:studywithfun/utility/loadingWidget/loading.dart';
 import 'package:studywithfun/utility/provider/account.dart';
 import 'package:studywithfun/utility/provider/commonprovider.dart';
 import 'package:studywithfun/utility/widgets/commonAppBar.dart';
-
 import 'dataBase.dart';
+import 'package:studywithfun/utility/functions/coinDectectionFunction.dart';
+import 'package:studywithfun/utility/functions/showToastFunction.dart';
 
 class AskADoubt extends StatefulWidget {
   @override
@@ -187,7 +188,9 @@ class _AskADoubtState extends State<AskADoubt> {
 
                           AskDoubtDatabase askDoubtDatabase = AskDoubtDatabase(
                               user['uid'], queryDetails, context);
-                          showMyDialog(context, queryDetails, askDoubtDatabase);
+                          coinDetectFunction(context, () {
+                            askDoubtDatabase.saveData(queryDetails);
+                          });
                         }
                       },
                     ),
@@ -205,49 +208,38 @@ class _AskADoubtState extends State<AskADoubt> {
 // int dropIndex=0;
 String dropValue = dropDown[0];
 List dropDown = ['bank', 'psc'];
-
-Future<void> showMyDialog(BuildContext context, Map queryDetails,
-    AskDoubtDatabase askDoubtDatabase) async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Are you sure !!'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Text('On submitting a coin is deducted'),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('Cancel'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          FlatButton(
-            child: Text('ok'),
-            onPressed: () {
-              Navigator.of(context).pop();
-              askDoubtDatabase.saveData(queryDetails);
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
-
-void showToast(String message) {
-  Fluttertoast.showToast(
-      msg: "$message",
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 2,
-      backgroundColor: Colors.grey.shade800,
-      textColor: Colors.white,
-      fontSize: 16.0);
-}
+//
+// Future<void> showMyDialog(BuildContext context, Map queryDetails,
+//     AskDoubtDatabase askDoubtDatabase) async {
+//   return showDialog<void>(
+//     context: context,
+//     barrierDismissible: false, // user must tap button!
+//     builder: (BuildContext context) {
+//       return AlertDialog(
+//         title: Text('Are you sure !!'),
+//         content: SingleChildScrollView(
+//           child: ListBody(
+//             children: <Widget>[
+//               Text('On submitting a coin is deducted'),
+//             ],
+//           ),
+//         ),
+//         actions: <Widget>[
+//           FlatButton(
+//             child: Text('Cancel'),
+//             onPressed: () {
+//               Navigator.of(context).pop();
+//             },
+//           ),
+//           FlatButton(
+//             child: Text('ok'),
+//             onPressed: () {
+//               Navigator.of(context).pop();
+//               askDoubtDatabase.saveData(queryDetails);
+//             },
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }

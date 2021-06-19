@@ -35,7 +35,7 @@ class _QuestionsPageState extends State<QuestionsPage>
     runTimer = true;
     _isMore = false;
     _isBookmarked = false;
-    var provider = Provider.of<QuestionAnswersProvider>(context, listen: false);
+    var provider = Provider.of<SureShotAnswersProvider>(context, listen: false);
     _questionController =
         TabController(vsync: this, length: _questionAnswers.length);
     _questionController.index = provider.questionIndex;
@@ -48,20 +48,20 @@ class _QuestionsPageState extends State<QuestionsPage>
 
   void changeIndex(int index) async {
     await Future.delayed(Duration(milliseconds: 500));
-    Provider.of<QuestionAnswersProvider>(context, listen: false)
+    Provider.of<SureShotAnswersProvider>(context, listen: false)
         .changeQuestionIndex(index);
   }
 
   void tabListener() {
     _questionController.addListener(() {
       int index = _questionController.index;
-      Provider.of<QuestionAnswersProvider>(context, listen: false)
+      Provider.of<SureShotAnswersProvider>(context, listen: false)
           .changeQuestionIndex(index);
     });
   }
 
   void closeModal(void value) {
-    int index = Provider.of<QuestionAnswersProvider>(context, listen: false)
+    int index = Provider.of<SureShotAnswersProvider>(context, listen: false)
         .questionIndex;
     _questionController.index = index;
     print('modal closed');
@@ -91,7 +91,7 @@ class _QuestionsPageState extends State<QuestionsPage>
         body: SafeArea(
           child: Column(
             children: <Widget>[
-              Consumer<QuestionAnswersProvider>(
+              Consumer<SureShotAnswersProvider>(
                 builder: (context, provider, child) {
                   return Material(
                     // textStyle: TextStyle(color: Colors.white),
@@ -176,7 +176,7 @@ class BottomQuestionSelector extends StatelessWidget {
   @override
   Widget build(context) {
     double width = MediaQuery.of(context).size.width;
-    return Consumer<QuestionAnswersProvider>(
+    return Consumer<SureShotAnswersProvider>(
         builder: (context, provider, child) {
       List<Map> answeredList = provider.answeredList;
       print(provider.questionIndex);

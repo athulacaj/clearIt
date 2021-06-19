@@ -11,4 +11,9 @@ class CommonProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void hideSpinner() {
+    isSpinner = false;
+    notifyListeners();
+  }
 }

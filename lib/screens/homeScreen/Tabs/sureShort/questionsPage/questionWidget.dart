@@ -66,20 +66,27 @@ class _QuestionAndOptionState extends State<QuestionAndOption> {
                                   box1 = size.height;
                                   totalHeight();
                                 },
-                                child: Container(
-                                  // height: 250,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(top: 1),
-                                    child: Material(
-                                      elevation: 1,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Container(
+                                    // height: 250,
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      border: Border.all(
+                                          color: Color(0xff4C4C4D), width: 1),
+                                      color: Color(0xffFFFEF2),
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(top: 1),
                                       child: Stack(
                                         children: <Widget>[
                                           Padding(
                                             padding: EdgeInsets.only(
-                                                left: 21,
-                                                right: 21,
-                                                top: 5,
-                                                bottom: 5),
+                                                left: 11,
+                                                right: 11,
+                                                top: 10,
+                                                bottom: 10),
                                             child: Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
@@ -87,7 +94,6 @@ class _QuestionAndOptionState extends State<QuestionAndOption> {
                                                   CrossAxisAlignment.start,
                                               children: <Widget>[
                                                 SizedBox(height: 10),
-                                                SizedBox(height: 22),
                                                 Text(
                                                   '$question',
                                                   style: TextStyle(
@@ -136,7 +142,7 @@ Widget buildOptions(List options, int qNo, BuildContext context) {
 }
 
 Widget returnText(var time, BuildContext context) {
-  Provider.of<QuestionAnswersProvider>(context, listen: false)
+  Provider.of<SureShotAnswersProvider>(context, listen: false)
       .addTimeOfEachQuestion();
 
   return Text(
